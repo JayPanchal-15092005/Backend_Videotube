@@ -4,7 +4,7 @@ import mongooseAggregatePaginate from "mongoose-aggregate-paginate-v2";
 const commentSchema = new mongoose.Schema({
     content: {
         type: String,
-        required: true
+        required: [true, "content is required"]
     },
     video: {
         type: mongoose.Schema.Types.ObjectId,
