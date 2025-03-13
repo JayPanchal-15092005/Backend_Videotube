@@ -15,4 +15,4 @@ router.use(verifyJWT, upload.none());
 router.route("/:videoId").get(getVideoComment).post(addComment);
 router.route("/c/:commentId").delete(deleteComment).patch(updateComment)
 
-export default router
+export default router;
