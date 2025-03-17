@@ -177,12 +177,11 @@ const publishVideo = asyncHandler(async(req, res) => {
 
 // get video by id
 
-const getVideoById = asyncHandler(async(req, res) => {
-
-    const { videoId }  = req.params;
+const getVideoById = asyncHandler(async (req, res) => {
+    const { videoId } = req.params;
 
     if (!isValidObjectId(videoId)) {
-        throw new ApiError(400, "Invalid videoId")
+        throw new ApiError(400, "Invalid videoId");
     }
 
     if (!isValidObjectId(req.user?._id)) {
@@ -214,7 +213,8 @@ const getVideoById = asyncHandler(async(req, res) => {
                         $lookup: {
                             from: "subscriptions",
                             localField: "_id",
-                            foreignField: "channel"
+                            foreignField: "channel",
+                            as: "subscribers"
                         }
                     },
                     {
@@ -228,10 +228,10 @@ const getVideoById = asyncHandler(async(req, res) => {
                                         $in: [
                                             req.user?._id,
                                             "$subscribers.subscriber"
-                                        ],
-                                        then: true,
-                                        else: false
-                                    }
+                                        ]
+                                    },
+                                    then: true,
+                                    else: false
                                 }
                             }
                         }
@@ -257,7 +257,7 @@ const getVideoById = asyncHandler(async(req, res) => {
                 },
                 isLiked: {
                     $cond: {
-                        if: {$in: [req.user?._id, "$likes.likedBy"]},
+                        if: { $in: [req.user?._id, "$likes.likedBy"] },
                         then: true,
                         else: false
                     }
@@ -280,43 +280,41 @@ const getVideoById = asyncHandler(async(req, res) => {
         }
     ]);
 
-    if(!video){
+    if (!video) {
         throw new ApiError(500, "failed to fetch the video");
     }
 
-     // increment views if video fetched successfully
-
-     await Video.findByIdAndUpdate(videoId, {
+    // increment views if video fetched successfully
+    await Video.findByIdAndUpdate(videoId, {
         $inc: {
             views: 1
         }
-     });
+    });
 
-     // add this video to user watch history
-
-     await User.findByIdAndUpdate(req.user?._id, {
+    // add this video to user watch history
+    await User.findByIdAndUpdate(req.user?._id, {
         $addToSet: {
             watchHistory: videoId
         }
-     });
+    });
 
-     return res
-     .status(200)
-     .json(
-        new ApiResponse(
-            200, 
-            video[0],
-            "Video details fetched Successfully"
-        )
-     )
-})
+    return res
+        .status(200)
+        .json(
+            new ApiResponse(
+                200,
+                video[0],
+                "Video details fetched Successfully"
+            )
+        );
+});
 
 // update video details like title, description, thumbnail
 
 const updateVideo = asyncHandler(async(req, res) => {
 
-    const { title, description } = req.body
-    const { videoId } =req.params;
+    const { title, description } = req.body;
+    const { videoId } = req.params;
 
     if (!isValidObjectId(videoId)) {
         throw new ApiError(400, "Invalid videoId");

@@ -8,18 +8,17 @@ import { asyncHandler } from "../utils/asyncHandler.js";
 
 // get all comment for a video
 
-const getVideoComment = asyncHandler ( async(req, res) => {
-    
-    const { videoId} = req.params
+const getVideoComment = asyncHandler(async (req, res) => {
+    const { videoId } = req.params;
     const { page = 1, limit = 10 } = req.query;
 
-    const video = await Video.findById(videoId)
+    const video = await Video.findById(videoId);
 
     if (!video) {
-        throw new ApiError(404, "Video not found")
+        throw new ApiError(404, "Video not found");
     }
 
-    const commentsAggregate = await Comment.aggregate([
+    const aggregatePipeline = [ // Corrected: Store pipeline in an array
         {
             $match: {
                 video: new mongoose.Types.ObjectId(videoId)
@@ -60,13 +59,13 @@ const getVideoComment = asyncHandler ( async(req, res) => {
         },
         {
             $sort: {
-                cratedAt: -1
+                createdAt: -1 // Corrected: Typo "cratedAt" to "createdAt"
             }
         },
         {
             $project: {
                 content: 1,
-                cratedAt: 1,
+                createdAt: 1, // Corrected: Typo "cratedAt" to "createdAt"
                 likeCount: 1,
                 owner: {
                     username: 1,
@@ -76,7 +75,7 @@ const getVideoComment = asyncHandler ( async(req, res) => {
                 isLiked: 1
             }
         }
-    ]);
+    ];
 
     const options = {
         page: parseInt(page, 10),
@@ -84,24 +83,25 @@ const getVideoComment = asyncHandler ( async(req, res) => {
     };
 
     const comments = await Comment.aggregatePaginate(
-        commentsAggregate,
+        aggregatePipeline, // Corrected: Pass the pipeline array
         options
-    )
+    );
 
     return res
-    .status(200)
-    .json(
-        new ApiResponse(
-            200,
-            comments,
-            "Comments fetched Successfully"
-        )
-    )
-})
+        .status(200)
+        .json(
+            new ApiResponse(
+                200,
+                comments,
+                "Comments fetched Successfully"
+            )
+        );
+});
 
 // add a comment to a video
 
 const addComment = asyncHandler( async(req, res) => {
+
     const { videoId } = req.params;
     const { content } = req.body;
 
@@ -140,6 +140,7 @@ const addComment = asyncHandler( async(req, res) => {
 // update a comment
 
 const updateComment = asyncHandler( async(req, res) => {
+
     const { commentId } = req.params;
     const { content } = req.body;
 
