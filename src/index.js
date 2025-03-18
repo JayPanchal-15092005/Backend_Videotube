@@ -17,6 +17,6 @@ connectDB()
     console.log("MONGO DB Connections Failed !!!", err);
 })
 
-app.get("/", (req, res) => {
-    res.json({ message: "Welcome to the VideoTube API!" });
-});
+// app.get("/", (req, res) => {
+//     res.json({ message: "Welcome to the VideoTube API!" });
+// });

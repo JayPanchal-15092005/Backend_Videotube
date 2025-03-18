@@ -16,6 +16,10 @@ app.use(express.static("public"))
 app.use(cookieParser())
 app.use(morgan("dev"))
 
+app.get("/", (req, res) => {
+    res.json({ message: "Welcome to the VideoTube API!" });
+});
+
 // Routes import 
 
 import userRouter from "./routes/user.routes.js";
