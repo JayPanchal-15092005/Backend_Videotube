@@ -81,6 +81,9 @@ const registerUser = asyncHandler( async (req, res) => {
         throw new ApiError(400, "Avatar file is required")
     }
 
+    // console.log("avatar", avatar);
+    // console.log("avatarLocalPath", avatarLocalPath);
+
     const avatar = await uploadOnCloudinary(avatarLocalPath)
     const coverImage = await uploadOnCloudinary(coverImageLocalPath)
 
@@ -199,7 +202,7 @@ const logoutUser = asyncHandler( async(req, res) => {
             {},
             "User logged Out"
         )
-    )
+    )  
 })
 
 const refreshAccessToken = asyncHandler( async(req, res) => {

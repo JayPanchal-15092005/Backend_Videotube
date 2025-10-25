@@ -7,7 +7,6 @@ import { Comment } from "../models/comment.model.js";
 import { Like } from "../models/like.model.js";
 import { deleteOnCloudinary, uploadOnCloudinary } from "../utils/cloudinary.js";
 import mongoose, { isValidObjectId } from "mongoose";
-import { text } from "express";
 
 // get all videos based on query, sort, pagination
 
