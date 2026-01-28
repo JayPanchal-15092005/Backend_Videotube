@@ -8,7 +8,7 @@ import mongoose from "mongoose";
 
 const generateAccessAndRefreshTokens = async(userId) => {
     try {
-        const user = await User.findById(userId)
+        const user = await User.findById(userId);
 
         const accessToken = user.generateAccessToken()
         const refreshToken = user.generateRefreshToken()
