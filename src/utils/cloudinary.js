@@ -8,20 +8,46 @@ cloudinary.config({
     secure: true
 });
 
+// const uploadOnCloudinary = async (localFilePath) => {
+//     try {
+//         if (!localFilePath) return null
+//         const response = await cloudinary.uploader.upload(localFilePath, {
+//             resource_type: "auto"
+//         })
+//         // console.log("File upload Successfully on the Cloudinary", response.url)
+//         fs.unlinkSync(localFilePath) //remove file from localFilePath after uploading to cloudinary
+//         return response;
+//     } catch (error) {
+//         fs.unlinkSync(localFilePath)
+//         return null;
+//     }
+// }
+
 const uploadOnCloudinary = async (localFilePath) => {
     try {
-        if (!localFilePath) return null
+        if (!localFilePath) return null;
+
         const response = await cloudinary.uploader.upload(localFilePath, {
             resource_type: "auto"
-        })
-        // console.log("File upload Successfully on the Cloudinary", response.url)
-        fs.unlinkSync(localFilePath) //remove file from localFilePath after uploading to cloudinary
+        });
+
+        // Delete file only if it exists
+        if (fs.existsSync(localFilePath)) {
+            fs.unlinkSync(localFilePath);
+        }
+
         return response;
     } catch (error) {
-        fs.unlinkSync(localFilePath)
+
+        // Delete file safely
+        if (localFilePath && fs.existsSync(localFilePath)) {
+            fs.unlinkSync(localFilePath);
+        }
+
         return null;
     }
-}
+};
+
 
 const deleteOnCloudinary =  async(public_id, resource_type="image") => {
     try {
