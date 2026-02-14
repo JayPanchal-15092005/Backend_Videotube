@@ -20,3 +20,9 @@ connectDB()
 // app.get("/", (req, res) => {
 //     res.json({ message: "Welcome to the VideoTube API!" });
 // });
+
+app.get("/", (req, res) => {
+  res.status(200).json({
+    message: "Backend is running"
+  });
+});
